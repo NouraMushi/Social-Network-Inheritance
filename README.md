@@ -1,103 +1,36 @@
 # Rmotrgram
 
-Today we're going to build a clone of a social network (really similar to the blue bird one, but let's not infringe any copyrights).
+## Project Description
+Rmotrgram is a simple project that simulates a social network similar to Twitter. It allows users to create different types of posts, follow other users, and view a timeline of posts.
 
-As with any other social network, we're going to have different types of `Post`s. All these different types of Posts should inherit from the parent `Post` class:
+## Features
 
-* `TextPost`: Just a simple text post. Should be constructed as `TextPost(text="Post Text")`.
-* `PicturePost`: A post containing text and the URL of a picture: Should be constructed as `PicturePost(text="Post Text", image_url="imgur.com/OAWTSJu")`.
-* `CheckInPost`: A post containing text and coordinates of the user's position. Should be constructed as `CheckInPost(text="Post Text", latitude="40.741895", longitude="-73.989308")`.
+- **User Creation**: Users can create accounts with a first name, last name, and email.
+- **Post Creation**: Three types of posts:
+  - **TextPost**: A simple text post.
+  - **PicturePost**: A post containing text and an image URL.
+  - **CheckInPost**: A post containing text and geographic coordinates.
+- **Following Users**: Users can follow other users.
+- **Timeline**: Displays posts from followed users, sorted from most recent to oldest.
 
-Rmotrgram will also have users. A user is a simple class that should be constructed as: `User(first_name="John", last_name="Smith", email="johnsmith@rmotr.com")`. 
+## Class Structure
 
-## Creating posts
+### Main Classes
 
-Posts are going to be created and then assigned a user. Once we have our user and post created, we're going to use the `add_post` method from the user class. `add_post` should add the post to the user's list of posts, and assign that user to the post. As an example, to create a text post for our user "John", we'll do something like this:
+1. **User**: Represents a user with:
+   - `first_name`
+   - `last_name`
+   - `email`
+   - A list of posts (`posts`)
+   - A list of users they follow (`following`)
 
-```python
-john = User("John", "Lennon", "john@rmotr.com")
-text_post = TextPost("All you need is love!")
-text_post.user == None  # Important! Since the post has no user yet, the user attribute should be None.
+2. **Post**: Base class for all types of posts, containing:
+   - `text`
+   - `user`
+   - `created_at` (timestamp of creation)
 
-john.add_post(text_post)
+3. **TextPost**: Inherits from `Post` to represent text posts.
 
-text_post.user == john  # Important!
-len(john.posts)
->>> 1
-```
+4. **PicturePost**: Inherits from `Post` to represent posts containing images.
 
-As you can see from our previous example, a post is created without any user. One might say it's an "orphan". So when a post is created it's user attribute is equal to `None`. But once we add that post to a user using `add_post()`, the post's user attribute should be updated, and the post should be added to the user's list of posts.
-
-## Following users
-
-Users will be able to follow other users. The `follow` method is super simple:
-
-```python
-john = User("John", "Lennon", "john@rmotr.com")
-paul = User("Paul", "McCartney", "paul@rmotr.com")
-
-john.follow(paul)
-print(john.following)
->>> [<User: "Paul McCartney">]
-```
-
-## A user's timeline
-
-This should be almost exactly like twitter. A user will have a timeline, made up of a list of posts created by other users that they're following, sorted by datetime (with the most recent listed first).
-
-```python
-john = User("John", "Lennon", "john@rmotr.com")
-paul = User("Paul", "McCartney", "paul@rmotr.com")
-george = User("George", "Harrison", "george@rmotr.com")
-
-john.follow(paul)
-john.follow(george)
-
-paul.add_post(TextPost("Post 1"))
-george.add_post(TextPost("Post 2"))
-paul.add_post(TextPost("Post 3"))
-
-print(john.following)
->>>[[<User: "Paul McCartney">], [<User: "George Harrison">]] # John is following Paul and George
-
-print(john.get_timeline())
->>> [<TextPost: Post 3>, <TextPost: Post 2>, <TextPost: Post 1> 
-```
-
-**Important**: A user's timeline should only include posts from the users they are following.
-
-## Reading Posts
-
-Finally, one of the most interesting use cases of this project is going to be related to the "visual representation" of the posts. It's a great example of [Polymorphism](https://en.wikipedia.org/wiki/Polymorphism_(computer_science)). The concept is simple. If I try to print different types of posts, I'm going to get different representations. For example:
-
-
-```python
-john = User("John", "Lennon", "john@rmotr.com")
-text_post_1 = TextPost("All you need is love!")
-picture_post_2 = PicturePost("Check my new submarine.", image_url='imgur.com/submarine.jpg')
-checkin_post_3 = CheckInPost("At Abbey Road Studios", latitude="19.111", longitude="-9.2222")
-john.add_post(text_post_1)
-john.add_post(picture_post_2)
-john.add_post(checkin_post_3)
-
-print(text_post_1)
-"""
-John Lennon: "All you need is love!"
-  Friday, Feb 03, 2017
-"""
-
-print(picture_post_2)
-"""
-John Lennon: "Check my new guitar"
-  Pic URL: imgur.com/guitar.png
-  Friday, Feb 03, 2017
-"""
-
-print(checkin_post_3)
-"""
-John Checked In: "At Abbey Road Studios"
-  19.111, -9.2222
-  Friday, Feb 03, 2017
-"""
-```
-**(check the tests to see more examples)**
+5. **CheckInPost**: Inherits from `Post` to represent posts with coordinates.
